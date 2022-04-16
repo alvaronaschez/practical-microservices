@@ -16,6 +16,7 @@
         "**/__pycache__": true,
         "**/.mypy_cache": true,
         "**/.benchmarks": true,
-        "**/.pytest_cache": true
+        "**/.pytest_cache": true,
+        "LICENSE": true
     }
 }
