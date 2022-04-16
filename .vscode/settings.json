@@ -1,0 +1,21 @@
+{
+    "workbench.colorTheme": "Zenburn",
+    "editor.formatOnSave": true,
+    "python.linting.lintOnSave": true,
+    "python.linting.enabled": true,
+    "python.linting.mypyEnabled": true,
+    "python.linting.flake8Enabled": true,
+    "python.linting.flake8Args": [
+        "--max-line-length=99"
+        // ,"--ignore=E402,F841,F401,E302,E305",
+    ],
+    "python.formatting.provider": "black",
+    "files.exclude": {
+        "**/.git": true,
+        "env/": true,
+        "**/__pycache__": true,
+        "**/.mypy_cache": true,
+        "**/.benchmarks": true,
+        "**/.pytest_cache": true
+    }
+}
