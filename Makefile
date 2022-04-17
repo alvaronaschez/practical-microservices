@@ -14,6 +14,4 @@ repl:
 	$(PYTHON)
 
 run:
-	source env/bin/activate
-	cd src
-	sanic src.server.app
+	$(PYTHON) src/server.py
