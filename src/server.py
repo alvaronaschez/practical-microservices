@@ -24,10 +24,18 @@ async def prime_request_context(request: Request):
     request.ctx.trace_id = str(uuid4())
 
 
-# # TODO: this makes little sense here: rethink this
-# @app.middleware("response")
-# async def attach_locals(request: Request, response: HTTPResponse):
-#     setattr(response, "locals", {"context": request.ctx})
+# from the book
+@app.middleware("response")
+async def attach_locals(request: Request, response: HTTPResponse):
+    response.headers["locals"] = {"ctx": vars(request.ctx)}
+
+
+# same as attach_locals but the way sanic documentation
+# describes how to do it
+# https://sanic.dev/en/guide/basics/headers.html#response
+@app.on_response
+async def add_request_id_header(request, response):
+    response.headers["X-Request-ID"] = request.id
 
 
 # sanic way to implement book's "lastResortErrorHandler" middleware
@@ -35,7 +43,7 @@ class CustomErrorHandler(ErrorHandler):
     def default(self, request, exception):
         """handles errors that have no error handlers assigned"""
         # You custom error handling logic...
-        trace_id = request.ctx.trace_id if hasattr(request.ctx, "trace_id") else "None"
+        trace_id = getattr(request.ctx, "trace_id", "")
         msg = f'trace_id = "{trace_id}"\n{repr(exception)}'
         error_logger.error(msg)
         return super().default(request, exception)
@@ -51,4 +59,10 @@ app.error_handler = CustomErrorHandler()
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=8000, debug=True, auto_reload=True, access_log=True)
+    app.run(
+        host="0.0.0.0",
+        port=8000,
+        debug=True,
+        auto_reload=True,
+        access_log=True
+    )
