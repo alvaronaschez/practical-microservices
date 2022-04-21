@@ -1,4 +1,5 @@
 {
+    "terminal.integrated.fontFamily": "MesloLGS NF", // ohmyzsh
     // "workbench.colorTheme": "Zenburn",
     "workbench.colorTheme": "Nord",
     "editor.formatOnSave": true,
@@ -7,7 +8,7 @@
     "python.linting.mypyEnabled": true,
     "python.linting.flake8Enabled": true,
     "python.linting.flake8Args": [
-        "--max-line-length=99"
+        "--max-line-length=88"
         // ,"--ignore=E402,F841,F401,E302,E305",
     ],
     "python.formatting.provider": "black",

@@ -1,10 +1,12 @@
-from uuid import uuid4
-
 from sanic import Sanic
 from sanic.request import Request
 from sanic.response import HTTPResponse, json
 from sanic.handlers import ErrorHandler
 from sanic.log import LOGGING_CONFIG_DEFAULTS, error_logger
+
+
+from middleware import mount_middleware
+
 
 LOGGING_CONFIG = LOGGING_CONFIG_DEFAULTS
 
@@ -18,30 +20,7 @@ LOGGING_CONFIG["loggers"]["sanic.error"]["handlers"].append("file")
 
 app = Sanic("practical-microservices", log_config=LOGGING_CONFIG)
 
-
-async def prime_request_context(request: Request):
-    request.ctx.trace_id = str(uuid4())
-
-
-app.register_middleware(prime_request_context, "request")
-
-
-# from the book
-async def attach_locals(request: Request, response: HTTPResponse):
-    response.headers["locals"] = {"ctx": vars(request.ctx)}
-
-
-app.register_middleware(attach_locals, "response")
-
-
-# same as attach_locals but the way sanic documentation
-# describes how to do it
-# https://sanic.dev/en/guide/basics/headers.html#response
-async def add_request_id_header(request, response):
-    response.headers["X-Request-ID"] = request.id
-
-
-app.register_middleware(add_request_id_header, "response")
+mount_middleware(app)
 
 
 # sanic way to implement book's "lastResortErrorHandler" middleware
@@ -57,18 +36,16 @@ class CustomErrorHandler(ErrorHandler):
 
 @app.get("/")
 async def hello_world(request: Request) -> HTTPResponse:
-    # i = 1 / 0
     return json({"message": "Hello, world", "context": request.ctx.trace_id})
 
 
 app.error_handler = CustomErrorHandler()
+app.ctx.host = "0.0.0.0"
+app.ctx.port = 8000
+app.ctx.debug = True
+app.ctx.auto_reload = True
+app.ctx.access_log = True
 
 
 if __name__ == "__main__":
-    app.run(
-        host="0.0.0.0",
-        port=8000,
-        debug=True,
-        auto_reload=True,
-        access_log=True
-    )
+    app.run()
