@@ -7,14 +7,16 @@ from application import create_app, run_app
 app: Sanic = create_app()
 
 
-@app.get("/")
 async def hello_world(request: Request) -> HTTPResponse:
     return json({"message": "Hello, world", "context": request.ctx.trace_id})
 
 
+app.add_route(hello_world, "/", ("GET",))
+
+
 configuration = dict(
     host="0.0.0.0",
-    port=8001,
+    port=8000,
     debug=True,
     auto_reload=True,
     access_log=True,
