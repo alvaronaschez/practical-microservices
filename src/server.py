@@ -40,12 +40,18 @@ async def hello_world(request: Request) -> HTTPResponse:
 
 
 app.error_handler = CustomErrorHandler()
-app.ctx.host = "0.0.0.0"
-app.ctx.port = 8000
-app.ctx.debug = True
-app.ctx.auto_reload = True
-app.ctx.access_log = True
+# app.ctx.host = "0.0.0.0"
+# app.ctx.port = 8000
+# app.ctx.debug = True
+# app.ctx.auto_reload = True
+# app.ctx.access_log = True
 
 
 if __name__ == "__main__":
-    app.run()
+    app.run(
+        host="0.0.0.0",
+        port=8001,
+        debug=True,
+        auto_reload=True,
+        access_log=True,
+    )
